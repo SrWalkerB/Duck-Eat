@@ -1,0 +1,10 @@
+services:
+  db:
+    image: postgres:18
+    container_name: duck_eat_db
+    ports:
+      - "5670:5432"
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: duck_eat_db

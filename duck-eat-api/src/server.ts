@@ -13,7 +13,7 @@ import { fastifyJwt } from "@fastify/jwt";
 import { authRoutes } from "./modules/auth/infra/http/auth.routes";
 import { ResourceNotFoundError } from "./errors/resource-not-found.error";
 import { NotAuthorization } from "./errors/not-authorization.error";
-import { accountRoutes } from "./modules/account/infra/account.routes";
+import { accountRoutes } from "./modules/account/infra/http/account.routes";
 
 const app = fastify();
 

@@ -1,3 +1,4 @@
+import { PrismaAccountRepository } from "@/modules/account/infra/db/prisma-account-repository";
 import { signInDto } from "@/modules/auth/application/dto/sign-in.dto";
 import { SignInUseCase } from "@/modules/auth/application/use-cases/sign-in.use-case";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
@@ -22,7 +23,7 @@ export const signInController: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const { email, password } = request.body;
 
-      const signInUseCase = new SignInUseCase();
+      const signInUseCase = new SignInUseCase(new PrismaAccountRepository());
       const response = await signInUseCase.execute({ email, password });
 
       const token = app.jwt.sign({

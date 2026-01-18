@@ -1,40 +1,30 @@
-import { prisma } from "@/lib/db/prisma";
-import { SignInDto } from "../dto/sign-in.dto";
-import { ResourceNotFoundError } from "@/errors/resource-not-found.error";
-import { Hashing } from "@/lib/hashing";
 import { NotAuthorization } from "@/errors/not-authorization.error";
+import { ResourceNotFoundError } from "@/errors/resource-not-found.error";
+import { prisma } from "@/lib/db/prisma";
+import { Hashing } from "@/lib/hashing";
+import type { AccountRepository } from "@/modules/account/domain/repositories/account-repository";
+import type { SignInDto } from "../dto/sign-in.dto";
 
 export class SignInUseCase {
-  async execute(props: SignInDto) {
-    const { email, password } = props;
+	constructor(private readonly accountRepository: AccountRepository) {}
 
-    const userAccount = await prisma.account.findFirst({
-      where: {
-        email,
-        deletedAt: null
-      },
-      select: {
-        users: {
-          select: {
-            id: true
-          }
-        },
-        password: true
-      }
-    });
+	async execute(props: SignInDto) {
+		const { email, password } = props;
 
-    if (!userAccount) {
-      throw new ResourceNotFoundError("Account", "Account not found");
-    };
+		const account = await this.accountRepository.getAccountByEmail(email);
 
-    const passwordCheck = await Hashing.verify(userAccount.password, password);
+		if (!account) {
+			throw new ResourceNotFoundError("Account", "Account not found");
+		}
 
-    if (!passwordCheck) {
-      throw new NotAuthorization("Account", "email or password incorrect");
-    }
+		const passwordCheck = await Hashing.verify(account.passwordHash, password);
 
-    return {
-      userId: userAccount.users[0].id
-    }
-  }
+		if (!passwordCheck) {
+			throw new NotAuthorization("Account", "email or password incorrect");
+		}
+
+		return {
+			userId: account.userId,
+		};
+	}
 }

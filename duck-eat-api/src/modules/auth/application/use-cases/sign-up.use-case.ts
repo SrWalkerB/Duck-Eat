@@ -1,40 +1,32 @@
-import { prisma } from "@/lib/db/prisma";
-import { AccountAlreadyExistError } from "../error/account-already-exist.error";
-import { SignUpDto } from "../dto/sign-up.dto";
 import { Hashing } from "@/lib/hashing";
+import type { AccountRepository } from "@/modules/account/domain/repositories/account-repository";
+import type { SignUpDto } from "../dto/sign-up.dto";
+import { AccountAlreadyExistError } from "../error/account-already-exist.error";
 
 export class SignUpUseCase {
-  async execute(props: SignUpDto) {
-    const accountExists = await prisma.account.findFirst({
-      where: {
-        email: props.email,
-        deletedAt: null
-      },
-      select: {
-        id: true
-      }
-    });
+	constructor(private readonly accountRepository: AccountRepository) {}
 
-    if (accountExists) {
-      throw new AccountAlreadyExistError("Account already exist");
+	async execute(props: SignUpDto) {
+		const accountExists = await this.accountRepository.getAccountByEmail(
+			props.email,
+		);
+
+		if (accountExists) {
+			throw new AccountAlreadyExistError("Account already exist");
+		}
+
+		const passwordHash = await Hashing.hash(props.password);
+
+		const userAccount = await this.accountRepository.createAccount({
+			email: props.email,
+			name: props.name,
+			password: passwordHash,
+			provider: "email",
+			role: props.role,
+		});
+
+		return {
+      userId: userAccount.userId
     };
-
-    const passwordHash = await Hashing.hash(props.password);
-
-    const account = await prisma.account.create({
-      data: {
-        email: props.email,
-        password: passwordHash,
-        role: props.role,
-        provider: "email",
-        users: {
-          create: {
-            name: props.name
-          }
-        }
-      }
-    });
-
-    return account;
-  }
+	}
 }

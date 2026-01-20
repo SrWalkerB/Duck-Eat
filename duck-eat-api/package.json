@@ -4,7 +4,10 @@
     "dev": "tsx watch --env-file=.env src/server.ts",
     "db:migrate": "npx prisma migrate dev --name init",
     "db:generate": "npx prisma generate",
-    "db:studio": "npx prisma studio"
+    "db:studio": "npx prisma studio",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "coverage": "vitest run --coverage"
   },
   "packageManager": "pnpm@10.14.0",
   "dependencies": {
@@ -25,8 +28,12 @@
     "@scalar/fastify-api-reference": "^1.43.5",
     "@types/node": "^25.0.9",
     "@types/pg": "^8.16.0",
+    "@vitest/coverage-v8": "4.0.17",
+    "@vitest/ui": "^4.0.17",
     "prisma": "^7.2.0",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite-tsconfig-paths": "^6.0.4",
+    "vitest": "^4.0.17"
   }
 }

@@ -1,6 +1,5 @@
 import { NotAuthorization } from "@/errors/not-authorization.error";
 import { ResourceNotFoundError } from "@/errors/resource-not-found.error";
-import { prisma } from "@/lib/db/prisma";
 import { Hashing } from "@/lib/hashing";
 import type { AccountRepository } from "@/modules/account/domain/repositories/account-repository";
 import type { SignInDto } from "../dto/sign-in.dto";

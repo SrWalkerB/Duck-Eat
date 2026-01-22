@@ -11,7 +11,7 @@ describe("Get User Profile", () => {
 
 		const accountMock = makeAccount();
 		const userMock = makeUser({
-			accountId: accountMock.id
+			accountId: accountMock.id,
 		});
 
 		accountRepository.accounts = [accountMock];

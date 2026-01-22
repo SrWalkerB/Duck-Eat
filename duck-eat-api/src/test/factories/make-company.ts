@@ -1,17 +1,18 @@
 import { randomUUID } from "node:crypto";
-import type { Company } from "@/generated/prisma/client";
+import type { CreateCompanyDto } from "@/modules/company/application/dto/create-company.dto";
 
-export function makeCompany(override?: Partial<Company>) {
-	const companyMock: Company = {
-		id: randomUUID(),
+export function makeCompanyInput(override?: Partial<CreateCompanyDto>) {
+	const companyInputMock: CreateCompanyDto = {
 		cnpj: "11111111111111",
 		tradeName: "Client 1",
 		ownerId: randomUUID(),
-		createdAt: new Date(),
-		deletedAt: new Date(),
-		updatedAt: new Date(),
+		companyTagId: randomUUID(),
+		companyAbout: {
+			address: "rua test",
+			description: "test",
+		},
 		...override,
 	};
 
-    return companyMock;
+	return companyInputMock;
 }

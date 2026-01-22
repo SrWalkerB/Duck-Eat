@@ -10,7 +10,7 @@ export const getMyCompanyController: FastifyPluginAsyncZod = async (app) => {
 			schema: {
 				summary: "Get my company",
 				description: "get my company owner by user logged",
-                tags: ["Company", "Authenticated"],
+				tags: ["Company", "Authenticated"],
 				response: {
 					200: getMyCompanyDto,
 				},

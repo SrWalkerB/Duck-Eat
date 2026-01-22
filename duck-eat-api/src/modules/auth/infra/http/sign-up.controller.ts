@@ -38,8 +38,8 @@ export const signUpController: FastifyPluginAsyncZod = async (app) => {
 				});
 
 				return reply.status(201).send({
-          id: response.userId
-        });
+					id: response.userId,
+				});
 			} catch (error) {
 				if (error instanceof AccountAlreadyExistError) {
 					return reply.status(409).send({

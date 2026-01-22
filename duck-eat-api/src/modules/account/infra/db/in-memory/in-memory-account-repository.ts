@@ -35,39 +35,45 @@ export class InMemoryAccountRepository implements AccountRepository {
 		});
 
 		return {
-			userId
-		}
+			userId,
+		};
 	}
 
 	async getAccountByEmail(email: string): Promise<GetAccountByEmail | null> {
-		const searchAccount = this.accounts.find((element => element.email === email));
+		const searchAccount = this.accounts.find(
+			(element) => element.email === email,
+		);
 
-		if(!searchAccount){
+		if (!searchAccount) {
 			return null;
-		};
+		}
 
 		return {
 			passwordHash: searchAccount.password,
-			userId: searchAccount.id
-		}
+			userId: searchAccount.id,
+		};
 	}
 
 	async getUserProfile(userId: string): Promise<GetUserProfile | null> {
-		const user = this.users.find((element => element.id === userId && !element.deletedAt));
+		const user = this.users.find(
+			(element) => element.id === userId && !element.deletedAt,
+		);
 
-		if(!user){
+		if (!user) {
 			return null;
 		}
 
-		const account = this.accounts.find((element => element.id === user.accountId && !element.deletedAt));
+		const account = this.accounts.find(
+			(element) => element.id === user.accountId && !element.deletedAt,
+		);
 
 		return {
 			id: user.id,
 			name: user.name,
 			account: {
 				email: account!.email,
-				role: account!.role
-			}
-		}
+				role: account!.role,
+			},
+		};
 	}
 }

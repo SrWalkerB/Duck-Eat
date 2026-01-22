@@ -10,8 +10,8 @@ export function makeAccount(override?: Partial<Account>) {
 		createdAt: new Date(),
 		updatedAt: new Date(),
 		deletedAt: null,
-        ...override
+		...override,
 	};
 
-    return accountMock;
-};
+	return accountMock;
+}

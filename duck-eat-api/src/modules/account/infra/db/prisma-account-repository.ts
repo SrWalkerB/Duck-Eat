@@ -72,10 +72,10 @@ export class PrismaAccountRepository implements AccountRepository {
 			},
 		});
 
-        if(!userProfile){
-            return null;
-        };
+		if (!userProfile) {
+			return null;
+		}
 
-        return userProfile;
+		return userProfile;
 	}
 }

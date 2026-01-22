@@ -17,7 +17,7 @@ describe("Sign In", () => {
 		});
 
 		const userMock = makeUser({
-			accountId: accountMock.id
+			accountId: accountMock.id,
 		});
 
 		inMemoryAccountRepository.accounts = [accountMock];
@@ -52,12 +52,12 @@ describe("Sign In", () => {
 
 		const accountMock = makeAccount({
 			email: `account@gmail.com`,
-			password: passwordHash
-		})
+			password: passwordHash,
+		});
 
 		const userMock = makeUser({
-			accountId: accountMock.id
-		})
+			accountId: accountMock.id,
+		});
 
 		inMemoryAccountRepository.accounts = [accountMock];
 		inMemoryAccountRepository.users = [userMock];

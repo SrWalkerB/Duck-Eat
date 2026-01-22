@@ -8,8 +8,8 @@ export function makeUser(override?: Partial<User>) {
 		createdAt: new Date(),
 		updatedAt: new Date(),
 		deletedAt: null,
-        ...override
+		...override,
 	};
 
-    return userMock;
+	return userMock;
 }

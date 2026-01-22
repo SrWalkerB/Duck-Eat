@@ -26,7 +26,7 @@ export class SignUpUseCase {
 		});
 
 		return {
-      userId: userAccount.userId
-    };
+			userId: userAccount.userId,
+		};
 	}
 }

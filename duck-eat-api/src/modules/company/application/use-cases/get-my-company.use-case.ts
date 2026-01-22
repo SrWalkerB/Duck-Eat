@@ -6,16 +6,13 @@ export class GetMyCompanyUseCase {
 	constructor(private readonly companyRepository: CompanyRepository) {}
 
 	async execute(userId: string) {
-        const searchCompany = await this.companyRepository.getCompanyByOwnerId(userId);
+		const searchCompany =
+			await this.companyRepository.getCompanyByOwnerId(userId);
 
-        if(!searchCompany){
-            throw new ResourceNotFoundError("Company not found");
-        }
+		if (!searchCompany) {
+			throw new ResourceNotFoundError("Company not found");
+		}
 
-		return getMyCompanyDto.parse({
-            id: searchCompany.id,
-            tradeName: searchCompany.tradeName,
-            cnpj: searchCompany.cnpj
-        });
+		return getMyCompanyDto.parse(searchCompany);
 	}
 }

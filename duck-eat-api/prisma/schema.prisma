@@ -55,21 +55,26 @@ model Company {
   createdAt             DateTime               @default(now()) @map("created_at")
   updatedAt             DateTime               @updatedAt @map("updated_at")
   deletedAt             DateTime?              @map("deleted_at")
+  companyTagId          String                 @map("company_tag_id")
+  companyTag            CompanyTag             @relation(fields: [companyTagId], references: [id])
   companyPaymentMethods CompanyPaymentMethod[]
   companyLogos          CompanyLogo[]
   companySessions       CompanySession[]
+  companyAbout          CompanyAbout?          @relation(fields: [companyAboutId], references: [id])
+  companyAboutId        String?                @map("company_about_id")
 
   @@map("company")
 }
 
 model CompanyAbout {
-  id           String   @id @default(uuid())
-  description  String?
-  address      String?
-  companyTagId String?  @map("company_tag_id")
-  companyId    String   @map("company_id")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id          String    @id @default(uuid())
+  description String?
+  address     String?
+  companyId   String    @map("company_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deleteAt    DateTime?
+  companies   Company[]
 
   @@map("company_about")
 }
@@ -93,10 +98,12 @@ model CompanyLogo {
 }
 
 model CompanyTag {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   name      String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  companies Company[]
 
   @@map("company_tag")
 }
@@ -107,6 +114,7 @@ model OpeningWeekDay {
   tag                 String
   createdAt           DateTime              @default(now()) @map("created_at")
   updatedAt           DateTime              @updatedAt @map("updated_at")
+  deletedAt           DateTime?             @map("deleted_at")
   companyOpeningHours CompanyOpeningHours[]
 
   @@unique([tag])
@@ -120,6 +128,7 @@ model CompanyOpeningHours {
   openingWeekDay   OpeningWeekDay @relation(fields: [openingWeekDayId], references: [id])
   createdAt        DateTime       @default(now()) @map("created_at")
   updatedAt        DateTime       @updatedAt @map("updated_at")
+  deletedAt        DateTime?      @map("deleted_at")
   openingWeekDayId String         @map("opening_week_day_id")
 
   @@map("company_opening_hours")
@@ -147,13 +156,12 @@ model CompanyPaymentMethod {
 model PaymentMethod {
   id                    String                 @id @default(uuid())
   name                  String
-  tag                   String
+  tag                   String                 @unique
   createdAt             DateTime               @default(now()) @map("created_at")
   updatedAt             DateTime               @updatedAt @map("updated_at")
   deletedAt             DateTime?              @map("deleted_at")
   companyPaymentMethods CompanyPaymentMethod[]
 
-  @@index([tag])
   @@map("payment_method")
 }
 

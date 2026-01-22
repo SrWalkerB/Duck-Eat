@@ -5,7 +5,7 @@ export interface GetAccountByEmail {
 
 export interface CreateAccountEntity {
 	email: string;
-    name: string;
+	name: string;
 	password: string;
 	role: string;
 	provider: string;

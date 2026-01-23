@@ -1,0 +1,14 @@
+import { auth } from "@/http/plugins/auth";
+import { FastifyPluginAsync } from "fastify";
+import { createProductController } from "./create-product.controller";
+import { getMyProductsController } from "./get-my-products.controller";
+
+export const productRoutes: FastifyPluginAsync = async (app) => {
+	app.register(auth);
+	app.register(createProductController, {
+		prefix: "/new",
+	});
+	app.register(getMyProductsController, {
+		prefix: "/",
+	});
+};

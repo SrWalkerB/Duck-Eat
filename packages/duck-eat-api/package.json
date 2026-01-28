@@ -9,7 +9,8 @@
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"coverage": "vitest run --coverage",
-		"lint:all-file": "pnpm exec biome format --write"
+		"lint:all-file": "pnpm exec biome format --write",
+		"build:check": "tsc --noEmit"
 	},
 	"packageManager": "pnpm@10.14.0",
 	"dependencies": {

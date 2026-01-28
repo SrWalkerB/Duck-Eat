@@ -1,20 +1,21 @@
 import { randomUUID } from "node:crypto";
-import { CompanyProduct } from "@/generated/prisma/client";
 import {
 	CreateProductEntity,
 	ProductRepository,
 } from "../../domain/repositories/product-repository";
+import { ListProduct } from "../../application/dto/list-product.dto";
+import { Product } from "@/generated/prisma/client";
 
 export class InMemoryProductRepository implements ProductRepository {
-	products: CompanyProduct[] = [];
+	products: Product[] = [];
 
 	async create(props: CreateProductEntity): Promise<{ id: string }> {
-		const productNew: CompanyProduct = {
+		const productNew: Product = {
 			id: randomUUID(),
-			companyId: props.companyId,
 			name: props.name,
 			price: props.price,
 			description: props.description,
+			organizationId: props.organizationId,
 			createdAt: new Date(),
 			updatedAt: new Date(),
 			deletedAt: null,
@@ -26,4 +27,31 @@ export class InMemoryProductRepository implements ProductRepository {
 			id: productNew.id,
 		};
 	}
+
+	async listProducts(organizationId: string): Promise<ListProduct> {
+		return this.products.filter((element => element.organizationId === organizationId && !element.deletedAt))
+		.map((product) => {
+			return {
+				id: product.id,
+				name: product.name,
+				description: product.description,
+				price: product.price
+			}
+		})
+	}
+
+	async findOne(productId: string, organizationId: string): Promise<Product | null> {
+		const searchProduct = this.products.find((
+			element => element.id === productId 
+			&& element.organizationId === organizationId
+			&& !element.deletedAt
+		));
+
+		return searchProduct ? searchProduct : null
+	}
+
+	async removeById(productId: string): Promise<void> {
+		this.products = this.products.filter((element => element.id !== productId));
+	}
+	
 }

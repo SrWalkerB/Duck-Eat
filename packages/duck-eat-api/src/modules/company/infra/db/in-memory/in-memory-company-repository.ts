@@ -5,13 +5,35 @@ import type {
 	CompanyTag,
 } from "@/generated/prisma/client";
 import type { CreateCompanyDto } from "@/modules/company/application/dto/create-company.dto";
+import type { GetMyCompanies } from "@/modules/company/application/dto/get-my-company.dto";
 import type { CompanyRepository } from "@/modules/company/domain/repositories/company-repository";
-import { GetMyCompany } from "@/modules/company/application/dto/get-my-company.dto";
 
 export class InMemoryCompanyRepository implements CompanyRepository {
 	companies: Company[] = [];
 	companiesAbout: CompanyAbout[] = [];
 	companiesTag: CompanyTag[] = [];
+	
+	async getCompaniesByOrganizationId(organizationId: string): Promise<GetMyCompanies> {
+		const searchCompanies = this.companies.filter((element => element.organizationId === organizationId));
+
+		if(searchCompanies){
+			return searchCompanies.map((company) => {
+				const searchCompanyTag = this.companiesTag.find((element => element.id === company.companyTagId));
+
+				return {
+					id: company.id,
+					cnpj: company.cnpj,
+					tradeName: company.tradeName,
+					companyTag: {
+						id: searchCompanyTag!.id,
+						name: searchCompanyTag!.name
+					}
+				}
+			})
+		}
+
+		return []
+	}
 
 	async create(props: CreateCompanyDto): Promise<{ companyId: string }> {
 		const companyId = randomUUID();
@@ -19,7 +41,7 @@ export class InMemoryCompanyRepository implements CompanyRepository {
 		this.companies.push({
 			id: companyId,
 			cnpj: props.cnpj,
-			ownerId: props.ownerId,
+			organizationId: props.organizationId,
 			tradeName: props.tradeName,
 			createdAt: new Date(),
 			deletedAt: new Date(),
@@ -53,27 +75,5 @@ export class InMemoryCompanyRepository implements CompanyRepository {
 		}
 
 		return searchCompany;
-	}
-
-	async getCompanyByOwnerId(ownerId: string): Promise<GetMyCompany | null> {
-		const searchCompany = this.companies.find(
-			(element) => element.ownerId === ownerId,
-		);
-
-		if (!searchCompany) {
-			return null;
-		}
-
-		const companyTag = this.companiesTag.find(
-			(element) => element.id === searchCompany.companyTagId,
-		) as CompanyTag;
-
-		return {
-			...searchCompany,
-			companyTag: {
-				id: companyTag.id,
-				name: companyTag.name,
-			},
-		};
 	}
 }

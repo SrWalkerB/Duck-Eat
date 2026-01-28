@@ -48,9 +48,11 @@ export class InMemoryAccountRepository implements AccountRepository {
 			return null;
 		}
 
+		const searchUser = this.users.find((element => element.accountId === searchAccount.id));
+
 		return {
 			passwordHash: searchAccount.password,
-			userId: searchAccount.id,
+			userId: searchUser!.id,
 		};
 	}
 

@@ -5,7 +5,6 @@ import {
 } from "../../application/dto/create-product.dto";
 import { CreateProductUseCase } from "../../application/use-cases/create-product.use-case";
 import { PrismaProductRepository } from "../db/prisma-product-repository";
-import { PrismaCompanyRepository } from "@/modules/company/infra/db/prisma-company-repository";
 
 export const createProductController: FastifyPluginAsyncZod = async (app) => {
 	app.post(
@@ -15,17 +14,17 @@ export const createProductController: FastifyPluginAsyncZod = async (app) => {
 				summary: "Create Product",
 				description: "API for create product",
 				body: createProductRequestDto,
+				tags: ["Products", "Organization", "Authenticated"],
 				response: {
 					201: createProductResponse,
 				},
 			},
 		},
 		async (request, reply) => {
-			const { userId } = request.user;
+			const { organizationId } = request.user;
 			const { name, price, description } = request.body;
 
 			const createProductUseCase = new CreateProductUseCase(
-				new PrismaCompanyRepository(),
 				new PrismaProductRepository(),
 			);
 
@@ -33,7 +32,7 @@ export const createProductController: FastifyPluginAsyncZod = async (app) => {
 				name,
 				price,
 				description,
-				userLoggedId: userId,
+				organizationId
 			});
 
 			return reply.status(201).send(response);

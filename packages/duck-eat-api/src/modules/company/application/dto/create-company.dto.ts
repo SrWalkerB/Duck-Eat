@@ -15,7 +15,7 @@ export type CreateCompanyRequestDto = z.infer<typeof createCompanyRequestDto>;
 export const createCompanyDto = z.object({
 	tradeName: z.string(),
 	cnpj: z.string().min(14).max(14),
-	ownerId: z.uuid(),
+	organizationId: z.uuid(),
 	companyTagId: z.uuid(),
 	companyAbout: z.object({
 		description: z.string(),

@@ -5,7 +5,6 @@ import { GetCompanyTagController } from "./get-company-tag.controller";
 import { getMyCompanyController } from "./get-my-company.controller";
 
 export const companyRoutes: FastifyPluginAsync = async (app) => {
-	app.register(auth);
 	app.register(createCompanyController, {
 		prefix: "/new",
 	});

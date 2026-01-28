@@ -6,7 +6,7 @@ export function makeCompanyInput(override?: Partial<CreateCompanyDto>) {
 	const companyInputMock: CreateCompanyDto = {
 		cnpj: "11111111111111",
 		tradeName: "Client 1",
-		ownerId: randomUUID(),
+		organizationId: randomUUID(),
 		companyTagId: randomUUID(),
 		companyAbout: {
 			address: "rua test",
@@ -23,7 +23,7 @@ export function makeCompany(override?: Partial<Company>) {
 		id: randomUUID(),
 		cnpj: "11111111111111",
 		tradeName: `client-${Date.now()}`,
-		ownerId: randomUUID(),
+		organizationId: randomUUID(),
 		companyTagId: randomUUID(),
 		companyAboutId: randomUUID(),
 		createdAt: new Date(),

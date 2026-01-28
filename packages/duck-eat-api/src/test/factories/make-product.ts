@@ -1,12 +1,12 @@
+import { Product } from "@/generated/prisma/client";
 import { randomUUID } from "node:crypto";
-import { CompanyProduct } from "@/generated/prisma/client";
 
-export function makeProduct(override?: Partial<CompanyProduct>) {
-	const productMock: CompanyProduct = {
+export function makeProduct(override?: Partial<Product>) {
+	const productMock: Product = {
 		id: randomUUID(),
 		name: `product-${Date.now()}`,
 		price: 1,
-		companyId: randomUUID(),
+		organizationId: randomUUID(),
 		description: `description`,
 		createdAt: new Date(),
 		updatedAt: new Date(),

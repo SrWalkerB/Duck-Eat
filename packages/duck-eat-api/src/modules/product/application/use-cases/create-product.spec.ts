@@ -16,7 +16,6 @@ describe("Create Product", () => {
 		const userMock = makeUser();
 		const companyTag = makeCompanyTag();
 		const companyMock = makeCompany({
-			ownerId: userMock.id,
 			companyTagId: companyTag.id,
 		});
 
@@ -27,7 +26,6 @@ describe("Create Product", () => {
 		inMemoryProductRepository.products.push(productMock);
 
 		const sut = new CreateProductUseCase(
-			inMemoryCompanyRepository,
 			inMemoryProductRepository,
 		);
 
@@ -35,42 +33,11 @@ describe("Create Product", () => {
 			name: productMock.name,
 			description: productMock.description,
 			price: productMock.price,
-			userLoggedId: userMock.id,
+			organizationId: productMock.organizationId
 		});
 
 		expect(response).toEqual({
 			id: expect.any(String),
 		});
-	});
-
-	test("should return error create product if onwer id incorrect", async () => {
-		const inMemoryCompanyRepository = new InMemoryCompanyRepository();
-		const inMemoryProductRepository = new InMemoryProductRepository();
-
-		const userMock = makeUser();
-		const companyTag = makeCompanyTag();
-		const companyMock = makeCompany({
-			companyTagId: companyTag.id,
-		});
-
-		const productMock = makeProduct();
-
-		inMemoryCompanyRepository.companiesTag.push(companyTag);
-		inMemoryCompanyRepository.companies.push(companyMock);
-		inMemoryProductRepository.products.push(productMock);
-
-		const sut = new CreateProductUseCase(
-			inMemoryCompanyRepository,
-			inMemoryProductRepository,
-		);
-
-		await expect(
-			sut.execute({
-				name: productMock.name,
-				description: productMock.description,
-				price: productMock.price,
-				userLoggedId: userMock.id,
-			}),
-		).rejects.toThrow(ResourceNotFoundError);
 	});
 });

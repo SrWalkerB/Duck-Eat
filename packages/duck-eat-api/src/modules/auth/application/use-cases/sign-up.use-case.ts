@@ -4,6 +4,8 @@ import { Hashing } from "@/lib/hashing";
 import type { AccountRepository } from "@/modules/account/domain/repositories/account-repository";
 import type { CompanyRepository } from "@/modules/company/domain/repositories/company-repository";
 import type { CompanyTagRepository } from "@/modules/company/domain/repositories/company-tag-repository";
+import type { OrganizationRepository } from "@/modules/organization/domain/repositories/organization.repository";
+import { CreateSlug } from "@/util/create-slug";
 import type { SignUpDto } from "../dto/sign-up.dto";
 import { AccountAlreadyExistError } from "../error/account-already-exist.error";
 
@@ -12,6 +14,7 @@ export class SignUpUseCase {
 		private readonly accountRepository: AccountRepository,
 		private readonly companyRepository: CompanyRepository,
 		private readonly companyTagRepository: CompanyTagRepository,
+		private readonly organizationRepository: OrganizationRepository,
 	) {}
 
 	async execute(props: SignUpDto) {
@@ -52,12 +55,23 @@ export class SignUpUseCase {
 		});
 
 		if (props.account.role === "RESTAURANT_ADMIN") {
+			const organization = await this.organizationRepository.create({
+				name: props.company.tradeName,
+				ownerId: userAccount.userId,
+				slug: CreateSlug(props.company.tradeName),
+			});
+
+			await this.organizationRepository.addMember(
+				userAccount.userId,
+				organization.id,
+			);
+
 			await this.companyRepository.create({
 				cnpj: props.company.cnpj,
-				ownerId: userAccount.userId,
 				tradeName: props.company.tradeName,
 				companyTagId: props.company.companyTagId,
 				companyAbout: props.company.companyAbout,
+				organizationId: organization.id,
 			});
 		}
 

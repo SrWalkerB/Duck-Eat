@@ -7,6 +7,7 @@ import { AccountAlreadyExistError } from "@/modules/auth/application/error/accou
 import { SignUpUseCase } from "@/modules/auth/application/use-cases/sign-up.use-case";
 import { PrismaCompanyRepository } from "@/modules/company/infra/db/prisma-company-repository";
 import { PrismaCompanyTagRepository } from "@/modules/company/infra/db/prisma-company-tag-repository";
+import { PrismaOrganizationRepository } from "@/modules/organization/infra/db/prisma-organization.repository";
 
 export const signUpController: FastifyPluginAsyncZod = async (app) => {
 	app.post(
@@ -40,6 +41,7 @@ export const signUpController: FastifyPluginAsyncZod = async (app) => {
 					new PrismaAccountRepository(),
 					new PrismaCompanyRepository(),
 					new PrismaCompanyTagRepository(),
+					new PrismaOrganizationRepository(),
 				);
 
 				const response = await signUpUseCase.execute({
@@ -66,8 +68,8 @@ export const signUpController: FastifyPluginAsyncZod = async (app) => {
 				}
 
 				return reply.status(500).send({
-					message: "Internal server error"
-				})
+					message: "Internal server error",
+				});
 			}
 		},
 	);

@@ -1,8 +1,9 @@
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
+import { z } from "zod";
 import { PrismaAccountRepository } from "@/modules/account/infra/db/prisma-account-repository";
 import { signInDto } from "@/modules/auth/application/dto/sign-in.dto";
 import { SignInUseCase } from "@/modules/auth/application/use-cases/sign-in.use-case";
-import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import { z } from "zod";
+import { PrismaOrganizationRepository } from "@/modules/organization/infra/db/prisma-organization.repository";
 
 export const signInController: FastifyPluginAsyncZod = async (app) => {
 	app.post(
@@ -23,12 +24,16 @@ export const signInController: FastifyPluginAsyncZod = async (app) => {
 		async (request, reply) => {
 			const { email, password } = request.body;
 
-			const signInUseCase = new SignInUseCase(new PrismaAccountRepository());
+			const signInUseCase = new SignInUseCase(
+				new PrismaAccountRepository(),
+				new PrismaOrganizationRepository(),
+			);
 			const response = await signInUseCase.execute({ email, password });
 
 			const token = app.jwt.sign(
 				{
 					userId: response.userId,
+					organizationId: response.organizationId,
 				},
 				{
 					expiresIn: "10m",

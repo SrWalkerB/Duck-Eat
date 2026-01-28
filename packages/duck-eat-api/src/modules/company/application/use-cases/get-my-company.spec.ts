@@ -4,13 +4,16 @@ import { makeCompanyInput } from "@/test/factories/make-company";
 import { InMemoryCompanyRepository } from "../../infra/db/in-memory/in-memory-company-repository";
 import { GetMyCompanyUseCase } from "./get-my-company.use-case";
 import { makeCompanyTag } from "@/test/factories/make-company-tag";
+import { makeOrganization } from "@/test/factories/make-organization";
 
 describe("Get my company", () => {
 	test("should return my company", async () => {
 		const inMemoryCompanyRepository = new InMemoryCompanyRepository();
 		const companyTag = makeCompanyTag();
+		const organizationMock = makeOrganization();
 		const companyMock = makeCompanyInput({
 			companyTagId: companyTag.id,
+			organizationId: organizationMock.id
 		});
 		inMemoryCompanyRepository.companiesTag.push(companyTag);
 
@@ -18,9 +21,9 @@ describe("Get my company", () => {
 
 		await inMemoryCompanyRepository.create(companyMock);
 
-		const companyNew = await sut.execute(companyMock.ownerId);
+		const companyNew = await sut.execute(companyMock.organizationId);
 
-		expect(companyNew).toEqual({
+		expect(companyNew).toEqual([{
 			id: expect.any(String),
 			cnpj: expect.any(String),
 			tradeName: expect.any(String),
@@ -28,7 +31,7 @@ describe("Get my company", () => {
 				id: expect.any(String),
 				name: expect.any(String),
 			},
-		});
+		}]);
 	});
 
 	test("should return error company not found", async () => {
@@ -36,8 +39,8 @@ describe("Get my company", () => {
 		const sut = new GetMyCompanyUseCase(inMemoryCompanyRepository);
 		const companyMock = makeCompanyInput();
 
-		await expect(sut.execute(companyMock.ownerId)).rejects.toThrow(
-			ResourceNotFoundError,
-		);
+		await expect(sut.execute(companyMock.organizationId))
+		.rejects
+		.toThrow(ResourceNotFoundError);
 	});
 });

@@ -5,11 +5,11 @@ import { getMyCompanyDto } from "../dto/get-my-company.dto";
 export class GetMyCompanyUseCase {
 	constructor(private readonly companyRepository: CompanyRepository) {}
 
-	async execute(userId: string) {
+	async execute(organizationId: string) {
 		const searchCompany =
-			await this.companyRepository.getCompanyByOwnerId(userId);
+			await this.companyRepository.getCompaniesByOrganizationId(organizationId);
 
-		if (!searchCompany) {
+		if (!searchCompany.length) {
 			throw new ResourceNotFoundError("Company not found");
 		}
 

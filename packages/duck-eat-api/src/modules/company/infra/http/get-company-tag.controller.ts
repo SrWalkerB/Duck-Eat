@@ -10,6 +10,10 @@ export const GetCompanyTagController: FastifyPluginAsyncZod = async (app) => {
 			schema: {
 				summary: "Company Tag",
 				description: "Get company tag",
+				tags: [
+					"Company",
+					"Public"
+				],
 				response: {
 					200: getCompanyTagDto,
 				},

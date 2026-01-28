@@ -2,6 +2,7 @@ import { auth } from "@/http/plugins/auth";
 import { FastifyPluginAsync } from "fastify";
 import { createProductController } from "./create-product.controller";
 import { getMyProductsController } from "./get-my-products.controller";
+import { removeProductController } from "./remove-product.controller";
 
 export const productRoutes: FastifyPluginAsync = async (app) => {
 	app.register(auth);
@@ -9,6 +10,9 @@ export const productRoutes: FastifyPluginAsync = async (app) => {
 		prefix: "/new",
 	});
 	app.register(getMyProductsController, {
+		prefix: "/",
+	});
+	app.register(removeProductController, {
 		prefix: "/",
 	});
 };

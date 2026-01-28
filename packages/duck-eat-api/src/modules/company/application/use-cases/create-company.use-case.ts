@@ -29,7 +29,7 @@ export class CreateCompanyUseCase {
 
 		const companyNew = await this.companyRepository.create({
 			cnpj: props.cnpj,
-			ownerId: props.ownerId,
+			organizationId: props.organizationId,
 			tradeName: props.tradeName,
 			companyTagId: searchCompanyTag.id,
 			companyAbout: props.companyAbout,

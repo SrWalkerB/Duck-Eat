@@ -14,8 +14,8 @@ export const signUpDto = z.object({
 		companyTagId: z.uuid(),
 		companyAbout: z.object({
 			description: z.string(),
-			address: z.string()
-		})
+			address: z.string(),
+		}),
 	}),
 });
 

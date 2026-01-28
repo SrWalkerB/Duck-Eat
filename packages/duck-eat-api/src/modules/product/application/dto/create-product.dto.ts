@@ -10,7 +10,7 @@ export const createProductDto = z.object({
 	name: z.string(),
 	price: z.float64(),
 	description: z.string().nullable(),
-	userLoggedId: z.string(),
+	organizationId: z.string()
 });
 
 export const createProductResponse = z.object({

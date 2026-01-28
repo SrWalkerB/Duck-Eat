@@ -21,15 +21,16 @@ enum ROLES {
 
 model Organization {
   id                  String                @id @default(uuid())
+  name                String
   ownerId             String                @map("owner_id")
-  owner               User                  @relation(fields: [userId], references: [id])
+  owner               User                  @relation(fields: [ownerId], references: [id])
   slug                String                @unique
   createdAt           DateTime              @default(now()) @map("created_at")
   updatedAt           DateTime              @updatedAt @map("updated_at")
   deletedAt           DateTime?             @map("deleted_at")
-  userId              String
   companies           Company[]
   organizationMembers OrganizationMembers[]
+  products            Product[]
 
   @@map("organizations")
 }
@@ -208,9 +209,10 @@ model CompanySession {
   @@map("company_session")
 }
 
-model CompanyProduct {
+model Product {
   id                     String                  @id @default(uuid())
-  companyId              String                  @map("company_id")
+  organizationId         String                  @map("organization_id")
+  organization           Organization            @relation(fields: [organizationId], references: [id])
   name                   String
   description            String?
   price                  Float
@@ -218,33 +220,33 @@ model CompanyProduct {
   updatedAt              DateTime                @updatedAt @map("updated_at")
   deletedAt              DateTime?               @map("deleted_at")
   companySessionProducts CompanySessionProduct[]
-  companyProductPhotos   CompanyProductPhotos[]
+  productPhotos          ProductPhotos[]
 
-  @@map("company_product")
+  @@map("products")
 }
 
-model CompanyProductPhotos {
-  id               String         @id @default(uuid())
-  photoUrl         String         @map("photo_url")
-  companyProduct   CompanyProduct @relation(fields: [companyProductId], references: [id])
-  createdAt        DateTime       @default(now()) @map("created_at")
-  updatedAt        DateTime       @updatedAt @map("updated_at")
-  deletedAt        DateTime?      @map("deleted_at")
-  companyProductId String         @map("company_product_id")
+model ProductPhotos {
+  id        String    @id @default(uuid())
+  photoUrl  String    @map("photo_url")
+  productId String    @map("company_product_id")
+  product   Product   @relation(fields: [productId], references: [id])
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
-  @@map("company_product_photos")
+  @@map("product_photos")
 }
 
 model CompanySessionProduct {
   id               String         @id @default(uuid())
-  companyProduct   CompanyProduct @relation(fields: [companyProductId], references: [id])
+  product          Product        @relation(fields: [productId], references: [id])
   companySession   CompanySession @relation(fields: [companySessionId], references: [id])
-  companyProductId String         @map("company_product_id")
+  productId        String         @map("company_product_id")
   companySessionId String         @map("company_session_id")
   createdAt        DateTime       @default(now()) @map("created_at")
   updatedAt        DateTime       @updatedAt @map("updated_at")
   deletedAt        DateTime?      @map("deleted_at")
 
-  @@unique([companyProductId, companySessionId])
+  @@unique([productId, companySessionId])
   @@map("company_session_product")
 }

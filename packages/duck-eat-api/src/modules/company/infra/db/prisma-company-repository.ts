@@ -1,8 +1,8 @@
 import type { Company } from "@/generated/prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import type { CreateCompanyDto } from "../../application/dto/create-company.dto";
-import type { GetMyCompany } from "../../application/dto/get-my-company.dto";
 import type { CompanyRepository } from "../../domain/repositories/company-repository";
+import { GetMyCompanies } from "../../application/dto/get-my-company.dto";
 
 export class PrismaCompanyRepository implements CompanyRepository {
 	async create(props: CreateCompanyDto): Promise<{ companyId: string }> {
@@ -10,7 +10,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
 			data: {
 				cnpj: props.cnpj,
 				tradeName: props.tradeName,
-				ownerId: props.ownerId,
+				organizationId: props.organizationId,
 				companyTagId: props.companyTagId,
 			},
 		});
@@ -39,10 +39,12 @@ export class PrismaCompanyRepository implements CompanyRepository {
 		return company;
 	}
 
-	async getCompanyByOwnerId(ownerId: string): Promise<GetMyCompany | null> {
-		const company = await prisma.company.findFirst({
+	async getCompaniesByOrganizationId(
+		organizationId: string,
+	): Promise<GetMyCompanies> {
+		const companies = await prisma.company.findMany({
 			where: {
-				ownerId,
+				organizationId,
 				deletedAt: null,
 			},
 			select: {
@@ -58,10 +60,6 @@ export class PrismaCompanyRepository implements CompanyRepository {
 			},
 		});
 
-		if (!company) {
-			return null;
-		}
-
-		return company;
+		return companies;
 	}
 }

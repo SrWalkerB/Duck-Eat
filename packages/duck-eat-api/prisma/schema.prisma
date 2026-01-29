@@ -226,13 +226,13 @@ model Product {
 }
 
 model ProductPhotos {
-  id        String    @id @default(uuid())
-  photoUrl  String    @map("photo_url")
-  productId String    @map("company_product_id")
-  product   Product   @relation(fields: [productId], references: [id])
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  id          String    @id @default(uuid())
+  photoUrlKey String    @map("photo_url_key")
+  productId   String    @map("product_id")
+  product     Product   @relation(fields: [productId], references: [id])
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
 
   @@map("product_photos")
 }

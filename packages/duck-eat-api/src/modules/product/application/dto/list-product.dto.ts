@@ -5,7 +5,12 @@ export const listProductsDto = z.array(
 		id: z.uuid(),
 		name: z.string(),
 		description: z.string().nullable(),
-		price: z.number()
+		price: z.number(),
+		productPhotos: z.array(
+			z.object({
+				photoUrl: z.string()
+			}
+		))
 	}),
 );
 

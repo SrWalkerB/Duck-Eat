@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Duck Eat is a SaaS that allows restaurants to create fast, mobile-first digital menu using QRCodes focusing on performance, simplicity and scalability
+Duck Eat is a SaaS that allows restaurants to create fast, digital menu focusing on performance, simplicity and scalability
 
 ## Architecture Overview
 

@@ -13,6 +13,9 @@ export const uploadProductPhotoController: FastifyPluginAsyncZod = async (
     ":productId/upload/photo",
     {
       schema: {
+        summary: "Upload photo",
+        description: "Upload photo",
+        tags: ["Product", "Authenticated", "Organization"],
         params: z.object({
           productId: z.uuid(),
         }),

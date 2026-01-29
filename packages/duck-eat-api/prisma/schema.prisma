@@ -241,7 +241,7 @@ model CompanySessionProduct {
   id               String         @id @default(uuid())
   product          Product        @relation(fields: [productId], references: [id])
   companySession   CompanySession @relation(fields: [companySessionId], references: [id])
-  productId        String         @map("company_product_id")
+  productId        String         @map("product_id")
   companySessionId String         @map("company_session_id")
   createdAt        DateTime       @default(now()) @map("created_at")
   updatedAt        DateTime       @updatedAt @map("updated_at")

@@ -37,6 +37,9 @@ export class PrismaProductRepository implements ProductRepository {
         description: true,
         price: true,
         productPhotos: {
+          where: {
+            deletedAt: null,
+          },
           select: {
             photoUrlKey: true,
           },

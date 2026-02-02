@@ -1,30 +1,33 @@
-import { expect, describe, test } from "vitest";
-import { InMemoryProductRepository } from "../../infra/db/in-memory-product-repository";
+import { expect, describe, test, beforeEach } from "vitest";
 import { RemoveProductUseCase } from "./remove-product.use-case";
 import { makeProduct } from "@/test/factories/make-product";
 import { ResourceNotFoundError } from "@/errors/resource-not-found.error";
+import { InMemoryProductRepository } from "@/test/repositories/in-memory-product-repository";
+
+let inMemoryProductRepository: InMemoryProductRepository;
+let sut: RemoveProductUseCase;
 
 describe("Remove Product", () => {
-    test("should remove product by productId and organizationId", async() => {
-        const inMemoryProductRepository = new InMemoryProductRepository();
-        const productMock = makeProduct();
+  beforeEach(() => {
+    inMemoryProductRepository = new InMemoryProductRepository();
+    sut = new RemoveProductUseCase(inMemoryProductRepository);
+  });
 
-        inMemoryProductRepository.products.push(productMock);
-        const sut = new RemoveProductUseCase(inMemoryProductRepository);
+  test("should remove product by productId and organizationId", async () => {
+    const productMock = makeProduct();
 
-        const response = await sut.execute(productMock.id, productMock.organizationId);
+    inMemoryProductRepository.products.push(productMock);
 
-        expect(response).toBeFalsy()
-    });
+    const response = await sut.execute(productMock.id, productMock.organizationId);
 
-    test("should return not found product if no exists productId valid", async () => {
-        const inMemoryProductRepository = new InMemoryProductRepository();
-        const productMock = makeProduct();
+    expect(response).toBeFalsy()
+  });
 
-        const sut = new RemoveProductUseCase(inMemoryProductRepository);
+  test("should return not found product if no exists productId valid", async () => {
+    const productMock = makeProduct();
 
-        expect(sut.execute(productMock.id, productMock.organizationId))
-        .rejects
-        .toThrowError(ResourceNotFoundError)
-    })
+    expect(sut.execute(productMock.id, productMock.organizationId))
+      .rejects
+      .toThrowError(ResourceNotFoundError)
+  })
 })

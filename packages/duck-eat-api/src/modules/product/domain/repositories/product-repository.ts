@@ -1,5 +1,4 @@
-import { Product } from "@/generated/prisma/client";
-import { ListProduct } from "../../application/dto/list-product.dto";
+import type { Product } from "@/generated/prisma/client";
 
 export interface CreateProductEntity {
   name: string;

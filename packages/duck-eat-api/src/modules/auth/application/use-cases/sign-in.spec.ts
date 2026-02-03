@@ -1,18 +1,26 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, beforeEach } from "vitest";
 import { NotAuthorization } from "@/errors/not-authorization.error";
 import { ResourceNotFoundError } from "@/errors/resource-not-found.error";
 import { Hashing } from "@/lib/hashing";
-import { InMemoryAccountRepository } from "@/modules/account/infra/db/in-memory/in-memory-account-repository";
+import { InMemoryAccountRepository } from "@/test/repositories/in-memory-account-repository";
 import { makeAccount } from "@/test/factories/make-account";
 import { makeUser } from "@/test/factories/make-user";
 import { SignInUseCase } from "./sign-in.use-case";
 import { InMemoryOrganizationRepository } from "@/test/repositories/in-memory-organization.repository";
 import { makeOrganization } from "@/test/factories/make-organization";
 
+let inMemoryAccountRepository: InMemoryAccountRepository;
+let inMemoryOrganizationRepository: InMemoryOrganizationRepository;
+let sut: SignInUseCase;
+
 describe("Sign In", () => {
+  beforeEach(() => {
+    inMemoryAccountRepository = new InMemoryAccountRepository();
+    inMemoryOrganizationRepository = new InMemoryOrganizationRepository();
+    sut = new SignInUseCase(inMemoryAccountRepository, inMemoryOrganizationRepository);
+  });
+
   test("should return userId of user", async () => {
-    const inMemoryAccountRepository = new InMemoryAccountRepository();
-    const inMemoryOrganizationRepository = new InMemoryOrganizationRepository();
     const passwordHash = await Hashing.hash("123456789");
 
     const accountMock = makeAccount({
@@ -31,7 +39,6 @@ describe("Sign In", () => {
     inMemoryAccountRepository.accounts.push(accountMock);
     inMemoryAccountRepository.users.push(userMock);
 
-    const sut = new SignInUseCase(inMemoryAccountRepository, inMemoryOrganizationRepository);
     const authenticated = await sut.execute({
       email: accountMock.email,
       password: "123456789",
@@ -44,15 +51,8 @@ describe("Sign In", () => {
   });
 
   test("should return error account not found", async () => {
-    const inMemoryAccountRepository = new InMemoryAccountRepository();
-    const inMemoryOrganizationRepository = new InMemoryOrganizationRepository();
-    const signInUseCase = new SignInUseCase(
-      inMemoryAccountRepository,
-      inMemoryOrganizationRepository
-    );
-
     await expect(
-      signInUseCase.execute({
+      sut.execute({
         email: "email-not-found@gmail.com",
         password: "123456789",
       }),
@@ -60,8 +60,6 @@ describe("Sign In", () => {
   });
 
   test("should return error account email or password", async () => {
-    const inMemoryAccountRepository = new InMemoryAccountRepository();
-    const inMemoryOrganizationRepository = new InMemoryOrganizationRepository();
     const passwordHash = await Hashing.hash("1234567890");
 
     const accountMock = makeAccount({
@@ -75,10 +73,6 @@ describe("Sign In", () => {
 
     inMemoryAccountRepository.accounts = [accountMock];
     inMemoryAccountRepository.users = [userMock];
-    const sut = new SignInUseCase(
-      inMemoryAccountRepository,
-      inMemoryOrganizationRepository
-    );
 
     await expect(
       sut.execute({

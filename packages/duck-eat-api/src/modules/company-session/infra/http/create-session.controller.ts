@@ -1,22 +1,22 @@
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import {
-  createSessionRequestDto,
-  createSessionResponseDto,
-} from "@/modules/company-session/application/dto/create-session.dto";
-import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
+  createCompanySessionRequestDto,
+  createCompanySessionResponseDto,
+} from "@/modules/company-session/application/dto/create-company-session.dto";
 import { CreateSessionUseCase } from "../../application/use-cases/create-session.use-case";
 import { PrismaCompanySessionRepository } from "../db/prisma-company-session.repository";
 
 export const createSessionController: FastifyPluginAsyncZod = async (app) => {
   app.post(
-    "/session",
+    "/",
     {
       schema: {
         summary: "Create session by company",
         description: "Create session by company and organization",
         tags: ["Session", "Authenticated", "Organization", "Company"],
-        body: createSessionRequestDto,
+        body: createCompanySessionRequestDto,
         response: {
-          201: createSessionResponseDto,
+          201: createCompanySessionResponseDto,
         },
       },
     },

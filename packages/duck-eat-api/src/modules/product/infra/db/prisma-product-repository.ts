@@ -1,11 +1,10 @@
+import type { Product } from "@/generated/prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import type {
   CreateProductEntity,
   ListProductData,
   ProductRepository,
 } from "../../domain/repositories/product-repository";
-import { ListProduct } from "../../application/dto/list-product.dto";
-import { Product } from "@/generated/prisma/client";
 
 export class PrismaProductRepository implements ProductRepository {
   async create(props: CreateProductEntity): Promise<{ id: string }> {

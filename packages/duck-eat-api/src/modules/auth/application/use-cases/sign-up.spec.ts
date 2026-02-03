@@ -1,5 +1,5 @@
-import { describe, expect, test } from "vitest";
-import { InMemoryAccountRepository } from "@/modules/account/infra/db/in-memory/in-memory-account-repository";
+import { describe, expect, test, beforeEach } from "vitest";
+import { InMemoryAccountRepository } from "@/test/repositories/in-memory-account-repository";
 import { InMemoryCompanyRepository } from "@/test/repositories/in-memory-company-repository";
 import { InMemoryCompanyTagRepository } from "@/test/repositories/in-memory-company-tag-repository";
 import { InMemoryOrganizationRepository } from "@/test/repositories/in-memory-organization.repository";
@@ -10,26 +10,33 @@ import { makeUser } from "@/test/factories/make-user";
 import { AccountAlreadyExistError } from "../error/account-already-exist.error";
 import { SignUpUseCase } from "./sign-up.use-case";
 
-describe("Sign Up", () => {
-  test("should create an account when email does not exist", async () => {
-    const inMemoryAccountRepository = new InMemoryAccountRepository();
-    const inMemoryCompanyRepository = new InMemoryCompanyRepository();
-    const inMemoryCompanyTagRepository = new InMemoryCompanyTagRepository();
-    const inMemoryOrganizationRepository = new InMemoryOrganizationRepository();
+let inMemoryAccountRepository: InMemoryAccountRepository;
+let inMemoryCompanyRepository: InMemoryCompanyRepository;
+let inMemoryCompanyTagRepository: InMemoryCompanyTagRepository;
+let inMemoryOrganizationRepository: InMemoryOrganizationRepository;
+let sut: SignUpUseCase;
 
+describe("Sign Up", () => {
+  beforeEach(() => {
+    inMemoryAccountRepository = new InMemoryAccountRepository();
+    inMemoryCompanyRepository = new InMemoryCompanyRepository();
+    inMemoryCompanyTagRepository = new InMemoryCompanyTagRepository();
+    inMemoryOrganizationRepository = new InMemoryOrganizationRepository();
+    sut = new SignUpUseCase(
+      inMemoryAccountRepository,
+      inMemoryCompanyRepository,
+      inMemoryCompanyTagRepository,
+      inMemoryOrganizationRepository,
+    );
+  });
+
+  test("should create an account when email does not exist", async () => {
     const companyTag = makeCompanyTag();
     const companyData = makeCompany({
       companyTagId: companyTag.id,
     });
 
     inMemoryCompanyTagRepository.companyTags.push(companyTag);
-
-    const sut = new SignUpUseCase(
-      inMemoryAccountRepository,
-      inMemoryCompanyRepository,
-      inMemoryCompanyTagRepository,
-      inMemoryOrganizationRepository,
-    );
 
     const response = await sut.execute({
       account: {
@@ -61,20 +68,8 @@ describe("Sign Up", () => {
     });
     const companyMock = makeCompanyInput();
 
-    const inMemoryAccountRepository = new InMemoryAccountRepository();
-    const inMemoryCompanyRepository = new InMemoryCompanyRepository();
-    const inMemoryCompanyTagRepository = new InMemoryCompanyTagRepository();
-    const inMemoryOrganizationRepository = new InMemoryOrganizationRepository();
-
     inMemoryAccountRepository.accounts = [accountMock];
     inMemoryAccountRepository.users = [userMock];
-
-    const sut = new SignUpUseCase(
-      inMemoryAccountRepository,
-      inMemoryCompanyRepository,
-      inMemoryCompanyTagRepository,
-      inMemoryOrganizationRepository
-    );
 
     await expect(
       sut.execute({

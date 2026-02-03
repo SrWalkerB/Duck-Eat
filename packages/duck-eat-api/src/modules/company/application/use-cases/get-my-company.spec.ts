@@ -1,14 +1,21 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, beforeEach } from "vitest";
 import { ResourceNotFoundError } from "@/errors/resource-not-found.error";
 import { makeCompanyInput } from "@/test/factories/make-company";
-import { InMemoryCompanyRepository } from "../../../../test/repositories/in-memory-company-repository";
+import { InMemoryCompanyRepository } from "@/test/repositories/in-memory-company-repository";
 import { GetMyCompanyUseCase } from "./get-my-company.use-case";
 import { makeCompanyTag } from "@/test/factories/make-company-tag";
 import { makeOrganization } from "@/test/factories/make-organization";
 
+let inMemoryCompanyRepository: InMemoryCompanyRepository;
+let sut: GetMyCompanyUseCase;
+
 describe("Get my company", () => {
+  beforeEach(() => {
+    inMemoryCompanyRepository = new InMemoryCompanyRepository();
+    sut = new GetMyCompanyUseCase(inMemoryCompanyRepository);
+  });
+
   test("should return my company", async () => {
-    const inMemoryCompanyRepository = new InMemoryCompanyRepository();
     const companyTag = makeCompanyTag();
     const organizationMock = makeOrganization();
     const companyMock = makeCompanyInput({
@@ -16,8 +23,6 @@ describe("Get my company", () => {
       organizationId: organizationMock.id
     });
     inMemoryCompanyRepository.companiesTag.push(companyTag);
-
-    const sut = new GetMyCompanyUseCase(inMemoryCompanyRepository);
 
     await inMemoryCompanyRepository.create(companyMock);
 
@@ -35,8 +40,6 @@ describe("Get my company", () => {
   });
 
   test("should return error company not found", async () => {
-    const inMemoryCompanyRepository = new InMemoryCompanyRepository();
-    const sut = new GetMyCompanyUseCase(inMemoryCompanyRepository);
     const companyMock = makeCompanyInput();
 
     await expect(sut.execute(companyMock.organizationId))

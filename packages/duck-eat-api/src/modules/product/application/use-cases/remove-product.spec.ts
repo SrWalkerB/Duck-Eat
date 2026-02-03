@@ -20,14 +20,14 @@ describe("Remove Product", () => {
 
     const response = await sut.execute(productMock.id, productMock.organizationId);
 
-    expect(response).toBeFalsy()
+    expect(response).toBeFalsy();
   });
 
   test("should return not found product if no exists productId valid", async () => {
     const productMock = makeProduct();
 
-    expect(sut.execute(productMock.id, productMock.organizationId))
+    await expect(sut.execute(productMock.id, productMock.organizationId))
       .rejects
-      .toThrowError(ResourceNotFoundError)
-  })
-})
+      .toThrowError(ResourceNotFoundError);
+  });
+});

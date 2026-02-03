@@ -1,23 +1,27 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, beforeEach } from "vitest";
 import { ResourceNotFoundError } from "@/errors/resource-not-found.error";
 import { makeAccount } from "@/test/factories/make-account";
 import { makeUser } from "@/test/factories/make-user";
-import { InMemoryAccountRepository } from "../../infra/db/in-memory/in-memory-account-repository";
+import { InMemoryAccountRepository } from "@/test/repositories/in-memory-account-repository";
 import { GetUserProfileUseCase } from "./get-user-profile.use-case";
 
-describe("Get User Profile", () => {
-	test("should return object of user profile RESTAURANT_ADMIN", async () => {
-		const accountRepository = new InMemoryAccountRepository();
+let inMemoryAccountRepository: InMemoryAccountRepository;
+let sut: GetUserProfileUseCase;
 
+describe("Get User Profile", () => {
+	beforeEach(() => {
+		inMemoryAccountRepository = new InMemoryAccountRepository();
+		sut = new GetUserProfileUseCase(inMemoryAccountRepository);
+	});
+
+	test("should return object of user profile RESTAURANT_ADMIN", async () => {
 		const accountMock = makeAccount();
 		const userMock = makeUser({
 			accountId: accountMock.id,
 		});
 
-		accountRepository.accounts = [accountMock];
-		accountRepository.users = [userMock];
-
-		const sut = new GetUserProfileUseCase(accountRepository);
+		inMemoryAccountRepository.accounts = [accountMock];
+		inMemoryAccountRepository.users = [userMock];
 
 		const profile = await sut.execute(userMock.id);
 
@@ -32,9 +36,6 @@ describe("Get User Profile", () => {
 	});
 
 	test("should return error of User not found", async () => {
-		const accountRepository = new InMemoryAccountRepository();
-		const sut = new GetUserProfileUseCase(accountRepository);
-
 		await expect(
 			sut.execute("82d5805a-59bb-4656-8342-a46ccef7f072"),
 		).rejects.toThrow(ResourceNotFoundError);

@@ -20,7 +20,7 @@ enum ROLES {
 }
 
 model Organization {
-  id                  String                @id @default(uuid())
+  id                  String                @id @default(uuid(7))
   name                String
   ownerId             String                @map("owner_id")
   owner               User                  @relation(fields: [ownerId], references: [id])
@@ -36,7 +36,7 @@ model Organization {
 }
 
 model OrganizationMembers {
-  id             String       @id @default(uuid())
+  id             String       @id @default(uuid(7))
   organizationId String       @map("organization_id")
   organization   Organization @relation(fields: [organizationId], references: [id])
   userId         String       @map("user_id")
@@ -50,7 +50,7 @@ model OrganizationMembers {
 }
 
 model Account {
-  id        String    @id @default(uuid())
+  id        String    @id @default(uuid(7))
   email     String    @unique
   password  String
   role      ROLES
@@ -64,7 +64,7 @@ model Account {
 }
 
 model User {
-  id                  String                @id @default(uuid())
+  id                  String                @id @default(uuid(7))
   name                String
   account             Account               @relation(fields: [accountId], references: [id])
   accountId           String                @unique @map("account_id")
@@ -78,7 +78,7 @@ model User {
 }
 
 model Company {
-  id                    String                 @id @default(uuid())
+  id                    String                 @id @default(uuid(7))
   tradeName             String                 @map("trade_name")
   cnpj                  String
   organizationId        String                 @map("organizationId")
@@ -98,7 +98,7 @@ model Company {
 }
 
 model CompanyAbout {
-  id          String    @id @default(uuid())
+  id          String    @id @default(uuid(7))
   description String?
   address     String?
   companyId   String    @map("company_id")
@@ -116,7 +116,7 @@ enum CompanyLogoContext {
 }
 
 model CompanyLogo {
-  id        String             @id @default(uuid())
+  id        String             @id @default(uuid(7))
   logo      String
   context   CompanyLogoContext
   company   Company            @relation(fields: [companyId], references: [id])
@@ -129,7 +129,7 @@ model CompanyLogo {
 }
 
 model CompanyTag {
-  id        String    @id @default(uuid())
+  id        String    @id @default(uuid(7))
   name      String
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -140,7 +140,7 @@ model CompanyTag {
 }
 
 model OpeningWeekDay {
-  id                  String                @id @default(uuid())
+  id                  String                @id @default(uuid(7))
   day                 String
   tag                 String
   createdAt           DateTime              @default(now()) @map("created_at")
@@ -153,7 +153,7 @@ model OpeningWeekDay {
 }
 
 model CompanyOpeningHours {
-  id               String         @id @default(uuid())
+  id               String         @id @default(uuid(7))
   startTime        DateTime
   endTime          DateTime
   openingWeekDay   OpeningWeekDay @relation(fields: [openingWeekDayId], references: [id])
@@ -171,7 +171,7 @@ enum PaymentContext {
 }
 
 model CompanyPaymentMethod {
-  id              String         @id @default(uuid())
+  id              String         @id @default(uuid(7))
   companyId       String         @map("company_id")
   company         Company        @relation(fields: [companyId], references: [id])
   paymentMethodId String         @map("payment_method_id")
@@ -185,7 +185,7 @@ model CompanyPaymentMethod {
 }
 
 model PaymentMethod {
-  id                    String                 @id @default(uuid())
+  id                    String                 @id @default(uuid(7))
   name                  String
   tag                   String                 @unique
   createdAt             DateTime               @default(now()) @map("created_at")
@@ -197,7 +197,7 @@ model PaymentMethod {
 }
 
 model CompanySession {
-  id                     String                  @id @default(uuid())
+  id                     String                  @id @default(uuid(7))
   name                   String
   company                Company                 @relation(fields: [companyId], references: [id])
   createdAt              DateTime                @default(now()) @map("created_at")
@@ -210,7 +210,7 @@ model CompanySession {
 }
 
 model Product {
-  id                     String                  @id @default(uuid())
+  id                     String                  @id @default(uuid(7))
   organizationId         String                  @map("organization_id")
   organization           Organization            @relation(fields: [organizationId], references: [id])
   name                   String
@@ -226,7 +226,7 @@ model Product {
 }
 
 model ProductPhotos {
-  id          String    @id @default(uuid())
+  id          String    @id @default(uuid(7))
   photoUrlKey String    @map("photo_url_key")
   productId   String    @map("product_id")
   product     Product   @relation(fields: [productId], references: [id])
@@ -238,7 +238,7 @@ model ProductPhotos {
 }
 
 model CompanySessionProduct {
-  id               String         @id @default(uuid())
+  id               String         @id @default(uuid(7))
   product          Product        @relation(fields: [productId], references: [id])
   companySession   CompanySession @relation(fields: [companySessionId], references: [id])
   productId        String         @map("product_id")

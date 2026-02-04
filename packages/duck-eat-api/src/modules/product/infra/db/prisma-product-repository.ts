@@ -35,6 +35,16 @@ export class PrismaProductRepository implements ProductRepository {
 				name: true,
 				description: true,
 				price: true,
+				companySessionProducts: {
+					select: {
+						companySession: {
+							select: {
+								id: true,
+								name: true
+							}
+						}
+					}
+				},
 				productPhotos: {
 					where: {
 						deletedAt: null,

@@ -12,6 +12,12 @@ export interface ListProductData {
 	name: string;
 	description: string | null;
 	price: number;
+	companySessionProducts: {
+		companySession: {
+			id: string;
+			name: string;
+		}
+	}[],
 	productPhotos: {
 		photoUrlKey: string;
 	}[];

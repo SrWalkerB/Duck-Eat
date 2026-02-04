@@ -1,6 +1,6 @@
 import { ResourceConflictError } from "@/errors/resource-conflict.error";
 import { ResourceNotFoundError } from "@/errors/resource-not-found.error";
-import { Hashing } from "@/lib/hashing";
+import { Hashing } from "@/lib/cryptography/hashing";
 import type { AccountRepository } from "@/modules/account/domain/repositories/account-repository";
 import type { CompanyRepository } from "@/modules/company/domain/repositories/company-repository";
 import type { CompanyTagRepository } from "@/modules/company/domain/repositories/company-tag-repository";

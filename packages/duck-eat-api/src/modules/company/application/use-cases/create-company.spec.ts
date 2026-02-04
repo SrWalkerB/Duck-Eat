@@ -12,61 +12,61 @@ let inMemoryCompanyTagRepository: InMemoryCompanyTagRepository;
 let sut: CreateCompanyUseCase;
 
 describe("Create Company", () => {
-  beforeEach(() => {
-    inMemoryCompanyRepository = new InMemoryCompanyRepository();
-    inMemoryCompanyTagRepository = new InMemoryCompanyTagRepository();
-    sut = new CreateCompanyUseCase(
-      inMemoryCompanyRepository,
-      inMemoryCompanyTagRepository,
-    );
-  });
+	beforeEach(() => {
+		inMemoryCompanyRepository = new InMemoryCompanyRepository();
+		inMemoryCompanyTagRepository = new InMemoryCompanyTagRepository();
+		sut = new CreateCompanyUseCase(
+			inMemoryCompanyRepository,
+			inMemoryCompanyTagRepository,
+		);
+	});
 
-  test("should return success create company without duplicate cnpj", async () => {
-    const companyTagMock = makeCompanyTag();
+	test("should return success create company without duplicate cnpj", async () => {
+		const companyTagMock = makeCompanyTag();
 
-    inMemoryCompanyTagRepository.companyTags = [companyTagMock];
+		inMemoryCompanyTagRepository.companyTags = [companyTagMock];
 
-    const companyData = makeCompanyInput({
-      companyTagId: companyTagMock.id,
-    });
-    const companyNew = await sut.execute(companyData);
+		const companyData = makeCompanyInput({
+			companyTagId: companyTagMock.id,
+		});
+		const companyNew = await sut.execute(companyData);
 
-    expect(companyNew).toEqual({
-      companyId: expect.any(String),
-    });
-  });
+		expect(companyNew).toEqual({
+			companyId: expect.any(String),
+		});
+	});
 
-  test("should return error duplicate cnpj", async () => {
-    const companyTagMock = makeCompanyTag();
+	test("should return error duplicate cnpj", async () => {
+		const companyTagMock = makeCompanyTag();
 
-    inMemoryCompanyTagRepository.companyTags = [companyTagMock];
+		inMemoryCompanyTagRepository.companyTags = [companyTagMock];
 
-    const companyOne = makeCompanyInput({
-      cnpj: "12345678900",
-      companyTagId: companyTagMock.id,
-    });
-    const companyTwo = makeCompanyInput({
-      cnpj: "12345678900",
-      companyTagId: companyTagMock.id,
-    });
+		const companyOne = makeCompanyInput({
+			cnpj: "12345678900",
+			companyTagId: companyTagMock.id,
+		});
+		const companyTwo = makeCompanyInput({
+			cnpj: "12345678900",
+			companyTagId: companyTagMock.id,
+		});
 
-    await sut.execute(companyOne);
+		await sut.execute(companyOne);
 
-    await expect(sut.execute(companyTwo)).rejects.toThrow(
-      ResourceConflictError,
-    );
-  });
+		await expect(sut.execute(companyTwo)).rejects.toThrow(
+			ResourceConflictError,
+		);
+	});
 
-  test("should return error company tag not found", async () => {
-    const companyTagMock = makeCompanyTag();
+	test("should return error company tag not found", async () => {
+		const companyTagMock = makeCompanyTag();
 
-    const companyMockData = makeCompanyInput({
-      cnpj: "12345678900",
-      companyTagId: companyTagMock.id,
-    });
+		const companyMockData = makeCompanyInput({
+			cnpj: "12345678900",
+			companyTagId: companyTagMock.id,
+		});
 
-    await expect(sut.execute(companyMockData)).rejects.toThrow(
-      ResourceNotFoundError,
-    );
-  });
+		await expect(sut.execute(companyMockData)).rejects.toThrow(
+			ResourceNotFoundError,
+		);
+	});
 });

@@ -7,6 +7,7 @@ import { CreateCompanyUseCase } from "../../application/use-cases/create-company
 import { PrismaCompanyRepository } from "../db/prisma-company-repository";
 import { PrismaCompanyTagRepository } from "../db/prisma-company-tag-repository";
 import { auth } from "@/http/plugins/auth";
+import { Can } from "@/http/plugins/can";
 
 export const createCompanyController: FastifyPluginAsyncZod = async (app) => {
 	app.register(auth);
@@ -20,6 +21,7 @@ export const createCompanyController: FastifyPluginAsyncZod = async (app) => {
 				response: {
 					201: createCompanyResponseDto,
 				},
+				preHandler: [Can.role(["ADMIN", "RESTAURANT_ADMIN"])],
 			},
 		},
 		async (request, reply) => {

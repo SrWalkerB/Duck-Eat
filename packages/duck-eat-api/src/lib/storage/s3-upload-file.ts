@@ -7,55 +7,55 @@ import { randomUUID } from "crypto";
 import { UploadFile } from "./upload-file";
 
 export class S3UploadFile implements UploadFile {
-  private readonly bucketName: string = env.S3_BUCKET;
+	private readonly bucketName: string = env.S3_BUCKET;
 
-  async upload(file: MultipartFile) {
-    try {
-      const key = `uploads/${randomUUID()}-${file.filename}`;
+	async upload(file: MultipartFile) {
+		try {
+			const key = `uploads/${randomUUID()}-${file.filename}`;
 
-      await s3.send(
-        new PutObjectCommand({
-          Bucket: this.bucketName,
-          Key: key,
-          Body: await file.toBuffer(),
-          ContentType: file.mimetype,
-        }),
-      );
+			await s3.send(
+				new PutObjectCommand({
+					Bucket: this.bucketName,
+					Key: key,
+					Body: await file.toBuffer(),
+					ContentType: file.mimetype,
+				}),
+			);
 
-      const url = await getSignedUrl(
-        s3,
-        new GetObjectCommand({
-          Bucket: this.bucketName,
-          Key: key,
-        }),
-        {
-          expiresIn: 60 * 5,
-        },
-      );
+			const url = await getSignedUrl(
+				s3,
+				new GetObjectCommand({
+					Bucket: this.bucketName,
+					Key: key,
+				}),
+				{
+					expiresIn: 60 * 5,
+				},
+			);
 
-      return {
-        url,
-        key,
-      };
-    } catch (error) {
-      console.error(error);
-    }
-  }
+			return {
+				url,
+				key,
+			};
+		} catch (error) {
+			console.error(error);
+		}
+	}
 
-  async getSignedUrlByKey(key: string): Promise<{ url: string }> {
-    const url = await getSignedUrl(
-      s3,
-      new GetObjectCommand({
-        Bucket: this.bucketName,
-        Key: key,
-      }),
-      {
-        expiresIn: 60 * 5,
-      },
-    );
+	async getSignedUrlByKey(key: string): Promise<{ url: string }> {
+		const url = await getSignedUrl(
+			s3,
+			new GetObjectCommand({
+				Bucket: this.bucketName,
+				Key: key,
+			}),
+			{
+				expiresIn: 60 * 5,
+			},
+		);
 
-    return {
-      url,
-    };
-  }
+		return {
+			url,
+		};
+	}
 }

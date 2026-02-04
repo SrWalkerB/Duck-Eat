@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const removeProductDto = z.object({
-    productId: z.uuid()
+	productId: z.uuid(),
 });
 
-export const removeProductResponse = z.void()
+export const removeProductResponse = z.void();

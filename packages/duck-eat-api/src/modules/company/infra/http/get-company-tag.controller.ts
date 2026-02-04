@@ -2,6 +2,7 @@ import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { getCompanyTagDto } from "../../application/dto/get-company-tag.dto";
 import { GetCompanyTagUseCase } from "../../application/use-cases/get-company-tag.use-case";
 import { PrismaCompanyTagRepository } from "../db/prisma-company-tag-repository";
+import { Can } from "@/http/plugins/can";
 
 export const GetCompanyTagController: FastifyPluginAsyncZod = async (app) => {
 	app.get(
@@ -10,13 +11,11 @@ export const GetCompanyTagController: FastifyPluginAsyncZod = async (app) => {
 			schema: {
 				summary: "Company Tag",
 				description: "Get company tag",
-				tags: [
-					"Company",
-					"Public"
-				],
+				tags: ["Company", "Public"],
 				response: {
 					200: getCompanyTagDto,
 				},
+				preHandler: [Can.role(["ADMIN", "RESTAURANT_ADMIN"])],
 			},
 		},
 		async (_, reply) => {

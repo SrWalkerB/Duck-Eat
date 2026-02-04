@@ -6,10 +6,10 @@ export const envSchema = z.object({
 	NODE_ENV: z
 		.enum(["development", "production", "test"])
 		.default("development"),
-	JWT_SECRET: z.string().default("secret"),
+	JWT_SECRET: z.string(),
 	AWS_SECRET_KEY: z.string(),
 	AWS_ACCESS_KEY: z.string(),
 	AWS_REGION: z.string(),
-	S3_BUCKET: z.string()
+	S3_BUCKET: z.string(),
 });
 export const env = envSchema.parse(process.env);

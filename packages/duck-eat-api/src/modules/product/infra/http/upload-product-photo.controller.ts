@@ -4,44 +4,47 @@ import { z } from "zod";
 import { UploadProductPhotoUseCase } from "../../application/use-cases/upload-product-photo.use-case";
 import { PrismaProductRepository } from "../db/prisma-product-repository";
 import { S3UploadFile } from "@/lib/storage/s3-upload-file";
+import { Can } from "@/http/plugins/can";
 
 export const uploadProductPhotoController: FastifyPluginAsyncZod = async (
-  app,
+	app,
 ) => {
-  app.register(multipart);
-  app.post(
-    ":productId/upload/photo",
-    {
-      schema: {
-        summary: "Upload photo",
-        description: "Upload photo",
-        tags: ["Product", "Authenticated", "Organization"],
-        params: z.object({
-          productId: z.uuid(),
-        }),
-      },
-    },
-    async (request, reply) => {
-      const { organizationId } = request.user;
-      const { productId } = request.params;
-      const form = await request.file();
+	app.register(multipart);
+	app.post(
+		":productId/upload/photo",
+		{
+			schema: {
+				summary: "Upload photo",
+				description: "Upload photo",
+				tags: ["Product", "Authenticated", "Organization"],
+				params: z.object({
+					productId: z.uuid(),
+				}),
+			},
 
-      if (!form) {
-        return reply.send();
-      }
+			preHandler: [Can.role(["ADMIN", "RESTAURANT_ADMIN"])],
+		},
+		async (request, reply) => {
+			const { organizationId } = request.user;
+			const { productId } = request.params;
+			const form = await request.file();
 
-      const uploadProductPhotoUseCase = new UploadProductPhotoUseCase(
-        new PrismaProductRepository(),
-        new S3UploadFile(),
-      );
+			if (!form) {
+				return reply.send();
+			}
 
-      const response = await uploadProductPhotoUseCase.execute({
-        file: form,
-        organizationId: organizationId,
-        productId: productId,
-      });
+			const uploadProductPhotoUseCase = new UploadProductPhotoUseCase(
+				new PrismaProductRepository(),
+				new S3UploadFile(),
+			);
 
-      return reply.send();
-    },
-  );
+			const response = await uploadProductPhotoUseCase.execute({
+				file: form,
+				organizationId: organizationId,
+				productId: productId,
+			});
+
+			return reply.send(response);
+		},
+	);
 };

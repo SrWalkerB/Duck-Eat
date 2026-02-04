@@ -8,9 +8,9 @@ export const listProductsDto = z.array(
 		price: z.number(),
 		productPhotos: z.array(
 			z.object({
-				photoUrl: z.string()
-			}
-		))
+				photoUrl: z.string(),
+			}),
+		),
 	}),
 );
 

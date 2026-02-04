@@ -16,7 +16,7 @@ export const signUpController: FastifyPluginAsyncZod = async (app) => {
 			schema: {
 				summary: "Sign Up",
 				description: "Create account",
-				tags: ["Auth"],
+				tags: ["Auth", "Not Authenticated"],
 				body: signUpDto,
 				response: {
 					201: z.object({

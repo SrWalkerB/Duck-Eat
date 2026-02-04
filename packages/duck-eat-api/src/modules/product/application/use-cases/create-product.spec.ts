@@ -12,34 +12,34 @@ let inMemoryProductRepository: InMemoryProductRepository;
 let sut: CreateProductUseCase;
 
 describe("Create Product", () => {
-  beforeEach(() => {
-    inMemoryCompanyRepository = new InMemoryCompanyRepository();
-    inMemoryProductRepository = new InMemoryProductRepository();
-    sut = new CreateProductUseCase(inMemoryProductRepository);
-  });
+	beforeEach(() => {
+		inMemoryCompanyRepository = new InMemoryCompanyRepository();
+		inMemoryProductRepository = new InMemoryProductRepository();
+		sut = new CreateProductUseCase(inMemoryProductRepository);
+	});
 
-  test("should create product for company owner by the user", async () => {
-    const userMock = makeUser();
-    const companyTag = makeCompanyTag();
-    const companyMock = makeCompany({
-      companyTagId: companyTag.id,
-    });
+	test("should create product for company owner by the user", async () => {
+		const userMock = makeUser();
+		const companyTag = makeCompanyTag();
+		const companyMock = makeCompany({
+			companyTagId: companyTag.id,
+		});
 
-    const productMock = makeProduct();
+		const productMock = makeProduct();
 
-    inMemoryCompanyRepository.companiesTag.push(companyTag);
-    inMemoryCompanyRepository.companies.push(companyMock);
-    inMemoryProductRepository.products.push(productMock);
+		inMemoryCompanyRepository.companiesTag.push(companyTag);
+		inMemoryCompanyRepository.companies.push(companyMock);
+		inMemoryProductRepository.products.push(productMock);
 
-    const response = await sut.execute({
-      name: productMock.name,
-      description: productMock.description,
-      price: productMock.price,
-      organizationId: productMock.organizationId
-    });
+		const response = await sut.execute({
+			name: productMock.name,
+			description: productMock.description,
+			price: productMock.price,
+			organizationId: productMock.organizationId,
+		});
 
-    expect(response).toEqual({
-      id: expect.any(String),
-    });
-  });
+		expect(response).toEqual({
+			id: expect.any(String),
+		});
+	});
 });

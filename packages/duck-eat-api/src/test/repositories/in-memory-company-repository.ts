@@ -12,13 +12,19 @@ export class InMemoryCompanyRepository implements CompanyRepository {
 	companies: Company[] = [];
 	companiesAbout: CompanyAbout[] = [];
 	companiesTag: CompanyTag[] = [];
-	
-	async getCompaniesByOrganizationId(organizationId: string): Promise<GetMyCompanies> {
-		const searchCompanies = this.companies.filter((element => element.organizationId === organizationId));
 
-		if(searchCompanies){
+	async getCompaniesByOrganizationId(
+		organizationId: string,
+	): Promise<GetMyCompanies> {
+		const searchCompanies = this.companies.filter(
+			(element) => element.organizationId === organizationId,
+		);
+
+		if (searchCompanies) {
 			return searchCompanies.map((company) => {
-				const searchCompanyTag = this.companiesTag.find((element => element.id === company.companyTagId));
+				const searchCompanyTag = this.companiesTag.find(
+					(element) => element.id === company.companyTagId,
+				);
 
 				return {
 					id: company.id,
@@ -26,13 +32,13 @@ export class InMemoryCompanyRepository implements CompanyRepository {
 					tradeName: company.tradeName,
 					companyTag: {
 						id: searchCompanyTag!.id,
-						name: searchCompanyTag!.name
-					}
-				}
-			})
+						name: searchCompanyTag!.name,
+					},
+				};
+			});
 		}
 
-		return []
+		return [];
 	}
 
 	async create(props: CreateCompanyDto): Promise<{ companyId: string }> {
@@ -68,6 +74,18 @@ export class InMemoryCompanyRepository implements CompanyRepository {
 	async findByCnpj(cnpj: string): Promise<Company | null> {
 		const searchCompany = this.companies.find(
 			(element) => element.cnpj === cnpj,
+		);
+
+		if (!searchCompany) {
+			return null;
+		}
+
+		return searchCompany;
+	}
+
+	async findById(companyId: string): Promise<Company | null> {
+		const searchCompany = this.companies.find(
+			(element) => element.id === companyId,
 		);
 
 		if (!searchCompany) {

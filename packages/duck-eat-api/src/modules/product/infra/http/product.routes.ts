@@ -6,9 +6,9 @@ import { removeProductController } from "./remove-product.controller";
 import { uploadProductPhotoController } from "./upload-product-photo.controller";
 
 export const productRoutes: FastifyPluginAsync = async (app) => {
-  app.register(auth);
-  app.register(createProductController);
-  app.register(getMyProductsController);
-  app.register(removeProductController);
-  app.register(uploadProductPhotoController);
+	app.register(auth);
+	app.register(createProductController);
+	app.register(getMyProductsController);
+	app.register(removeProductController);
+	app.register(uploadProductPhotoController);
 };

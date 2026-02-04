@@ -5,8 +5,8 @@ import { createCompanySessionProductController } from "./create-session-product.
 import { listCompanySessionController } from "./list-company-session.controller";
 
 export const companySessionRoutes: FastifyPluginAsync = async (app) => {
-  app.register(auth);
-  app.register(listCompanySessionController);
-  app.register(createSessionController);
-  app.register(createCompanySessionProductController);
+	app.register(auth);
+	app.register(listCompanySessionController);
+	app.register(createSessionController);
+	app.register(createCompanySessionProductController);
 };

@@ -1,14 +1,16 @@
 import { NotAuthorization } from "@/errors/not-authorization.error";
 import { ResourceNotFoundError } from "@/errors/resource-not-found.error";
-import { Hashing } from "@/lib/hashing";
+import { Hashing } from "@/lib/cryptography/hashing";
 import type { AccountRepository } from "@/modules/account/domain/repositories/account-repository";
 import type { OrganizationRepository } from "@/modules/organization/domain/repositories/organization.repository";
 import type { SignInDto } from "../dto/sign-in.dto";
+import { JwtService } from "../../domain/types/jwt-service";
 
 export class SignInUseCase {
 	constructor(
 		private readonly accountRepository: AccountRepository,
 		private readonly organizationRepository: OrganizationRepository,
+		private readonly jwtService: JwtService,
 	) {}
 
 	async execute(props: SignInDto) {
@@ -31,9 +33,29 @@ export class SignInUseCase {
 				account.userId,
 			);
 
+		const accessToken = this.jwtService.sign(
+			{
+				userId: account.userId,
+				organizationId: myOrganization ? myOrganization.id : "",
+			},
+			{
+				expiresIn: "15m",
+			},
+		);
+
+		const refreshToken = this.jwtService.sign(
+			{
+				userId: account.userId,
+				organizationId: myOrganization ? myOrganization.id : "",
+			},
+			{
+				expiresIn: "7d",
+			},
+		);
+
 		return {
-			userId: account.userId,
-			organizationId: myOrganization ? myOrganization.id : null,
+			accessToken,
+			refreshToken,
 		};
 	}
 }

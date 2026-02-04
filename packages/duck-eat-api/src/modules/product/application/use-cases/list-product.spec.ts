@@ -10,28 +10,28 @@ let fakeUploadFile: FakeUploadFile;
 let sut: ListProductsUseCase;
 
 describe("List Products", () => {
-  beforeEach(() => {
-    inMemoryProductRepository = new InMemoryProductRepository();
-    fakeUploadFile = new FakeUploadFile();
-    sut = new ListProductsUseCase(fakeUploadFile, inMemoryProductRepository);
-  });
+	beforeEach(() => {
+		inMemoryProductRepository = new InMemoryProductRepository();
+		fakeUploadFile = new FakeUploadFile();
+		sut = new ListProductsUseCase(fakeUploadFile, inMemoryProductRepository);
+	});
 
-  test("should return list products by organizationId", async () => {
-    const organizationMock = makeOrganization();
-    const productMock = makeProduct({
-      organizationId: organizationMock.id,
-    });
+	test("should return list products by organizationId", async () => {
+		const organizationMock = makeOrganization();
+		const productMock = makeProduct({
+			organizationId: organizationMock.id,
+		});
 
-    inMemoryProductRepository.products.push(productMock);
+		inMemoryProductRepository.products.push(productMock);
 
-    const response = await sut.execute(organizationMock.id);
+		const response = await sut.execute(organizationMock.id);
 
-    expect(response[0]).toEqual({
-      id: expect.any(String),
-      description: expect.any(String),
-      name: expect.any(String),
-      price: expect.any(Number),
-      productPhotos: expect.any(Array),
-    });
-  });
+		expect(response[0]).toEqual({
+			id: expect.any(String),
+			description: expect.any(String),
+			name: expect.any(String),
+			price: expect.any(Number),
+			productPhotos: expect.any(Array),
+		});
+	});
 });

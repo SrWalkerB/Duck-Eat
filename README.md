@@ -20,4 +20,3 @@ Duck Eat is a SaaS that allows restaurants to create fast, digital menu focusing
 - [ ] Cache with Redis
 - [ ] All Commits and English or 90%
 - [ ] Logs in JSON
-- [ ] CI / CD for deploy 
